@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Créateur de Slides</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0078ff">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log("✅ Service Worker installé:", reg.scope))
+            .catch(err => console.log("❌ Erreur SW:", err));
+        });
+      }
+    </script>
+    <style>
+      .dropzone {
+        border: 2px dashed #ccc;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        background-color: #f9f9f9;
+      }
+      .dropzone.dragover {
+        background-color: #e2eefd;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5">
+      <h2 class="mb-4">🎨 Crée ton PowerPoint stylé</h2>
+      <form method="POST" action="/preview" enctype="multipart/form-data">
+        <div class="mb-3 dropzone" id="dropzone">
+          <label for="image" class="form-label">📂 Glisse ou clique pour choisir une image</label>
+          <input type="file" class="form-control" name="image" id="image" required hidden>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nombre de slides</label>
+          <input type="number" class="form-control" name="num_slides" min="1" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Texte sur chaque slide (séparé par ligne)</label>
+          <textarea class="form-control" name="slide_texts" rows="4" placeholder="Slide 1\nSlide 2..."></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Couleur du texte</label>
+          <input type="color" class="form-control form-control-color" name="text_color" value="#FFFFFF">
+        </div>
+        <button type="submit" class="btn btn-primary">🧪 Prévisualiser mes slides</button>
+      </form>
+    </div>
+    <script>
+      const dropzone = document.getElementById("dropzone");
+      const fileInput = document.getElementById("image");
+      dropzone.addEventListener("click", () => fileInput.click());
+      dropzone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropzone.classList.add("dragover");
+      });
+      dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+      dropzone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        dropzone.classList.remove("dragover");
+      });
+    </script>
+  </body>
+</html>

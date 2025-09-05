@@ -1,0 +1,5 @@
+flask
+gunicorn
+werkzeug
+python-pptx
+pillow
